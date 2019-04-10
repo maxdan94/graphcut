@@ -160,7 +160,7 @@ int main(int argc,char** argv){
 	printf("Building adjacency array\n");
 	mkadjlist(g);
 
-	printf("Starting recursive bisections\n");
+	printf("Computing bisections\n");
 	lab=bisec(g);
 
 	printf("Prints resulting bisection in file %s\n",argv[2]);
