@@ -21,6 +21,7 @@ option "bisection": the algorithm to use, default is 1.
 - 1: greedy sparsest cut
 - 2: greedy densest cut
 - 3: greedy max cut
+- 3: greedy min cut
 
 ## Initial contributor:
 Maximilien Danisch  
