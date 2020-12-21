@@ -86,7 +86,7 @@ bool *greedySparsestcut(adjlist *g) {
 		}
 	} while (b);
 
-	//printf("Number of iterations = %u\n",iter);
+	printf("Number of iterations = %u\n",iter);
 
 	return lab;
 }
@@ -223,6 +223,71 @@ bool *greedyMaxcut(adjlist *g) {
 	return lab;
 }
 
+
+
+//A greedy heuristic for maxcut
+bool *greedyMincut(adjlist *g) {
+	unsigned long n=g->n,u,v,i;
+	double cut=0;
+	unsigned iter=0;
+	bool *lab=init(g);
+	bool b;
+	int *d0=calloc(g->n,sizeof(int)),*d1=calloc(g->n,sizeof(int));
+
+	for (i=0;i<g->e;i++){
+		u=g->edges[i].s;
+		v=g->edges[i].t;
+		if (lab[u]!=lab[v]){
+			cut++;
+		}
+		if (lab[v]==0){
+			d0[u]++;
+		}
+		else{
+			d1[u]++;
+		}
+		if (lab[u]==0){
+			d0[v]++;
+		}
+		else{
+			d1[v]++;
+		}
+	}
+
+	do {//greedy heuristics
+		iter++;
+		b=0;
+		for (u=0;u<n;u++) {
+			if (lab[u]==0 && d1[u] > d0[u]){
+				b=1;
+				lab[u]=1;
+				cut+=d0[u]-d1[u];
+				for (i=g->cd[u];i<g->cd[u+1];i++){
+					v=g->adj[i];
+					d0[v]--;
+					d1[v]++;
+				}
+			}
+			else if (lab[u]==1 && d0[u] > d1[u] ){
+				b=1;
+				lab[u]=0;
+				cut+=d1[u]-d0[u];
+				for (i=g->cd[u];i<g->cd[u+1];i++){
+					v=g->adj[i];
+					d0[v]++;
+					d1[v]--;
+				}
+			}
+		}
+	} while (b);
+
+	printf("Number of iterations = %u\n",iter);
+
+	return lab;
+}
+
+
+
 bisection choosebisection(char *c){
 	printf("Chosen bisection algorithm: ");
 	if (strcmp(c,"0")==0){
@@ -240,6 +305,10 @@ bisection choosebisection(char *c){
 	if (strcmp(c,"3")==0){
 		printf("Greedy Maxcut\n");
 		return greedyMaxcut;
+	}
+	if (strcmp(c,"4")==0){
+		printf("Greedy Mincut\n");
+		return greedyMincut;
 	}
 	printf("unknown\n");
 	exit(1);
